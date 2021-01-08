@@ -1,8 +1,8 @@
 const express = require("express");
 const User = require("../models/User");
 
-exports.getUserById = (req, res, next, email) => {
-  User.findOne({email:email}).exec((err, user) => {
+exports.getUserById = (req, res, next, id) => {
+  User.findById(id).exec((err, user) => {
     if (err || !user) {
       return res.status(400).json({
         error: err,
