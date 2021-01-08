@@ -1,8 +1,8 @@
 const express = require("express");
 const User = require("../models/User");
 
-exports.getUserById = (req, res, next, email) => {
-  User.findOne({ email: email }).exec((err, user) => {
+exports.getUserById = (req, res, next, id) => {
+  User.findById(id).exec((err, user) => {
     if (err || !user) {
       return res.status(400).json({
         error: err,
@@ -36,24 +36,28 @@ exports.addUser = async (req, res) => {
 };
 
 exports.updateUser = (req, res) => {
-  User.findByIdAndUpdate(
-    { _id: req.profile._id },
-    { $set: req.body },
-    { new: true, useFindAndModify: false },
-    (err, user) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Update unsuccessful",
-        });
+  try {
+    User.findByIdAndUpdate(
+      { _id: req.profile._id },
+      { $set: req.body },
+      { new: true, useFindAndModify: false },
+      (err, user) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Update unsuccessful",
+          });
+        }
+        console.log(user);
+        // user.salt = undefined;
+        // user.encry_password = undefined;
+        // user.updatedAt = undefined;
+        // user.createdAt = undefined;
+        res.json(user);
       }
-      console.log(user);
-      // user.salt = undefined;
-      // user.encry_password = undefined;
-      // user.updatedAt = undefined;
-      // user.createdAt = undefined;
-      res.json(user);
-    }
-  );
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 // 5ff5ff895373573eecd7bbfd tej
