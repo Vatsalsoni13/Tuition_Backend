@@ -13,6 +13,18 @@ exports.getUserById = (req, res, next, id) => {
     next();
   });
 };
+exports.getUserByEmail = (req, res, next, email) => {
+  User.findOne({ email: email }).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: err,
+      });
+    }
+    console.log(user);
+    req.profile = user;
+    next();
+  });
+};
 
 exports.getUser = (req, res) => {
   return res.json(req.profile);
