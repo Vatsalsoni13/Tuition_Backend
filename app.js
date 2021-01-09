@@ -17,8 +17,8 @@ app.use("/", (req, res) => {
   res.send("Finally Deployed");
 });
 
-const PORT = process.env.PORT || 3000;
-// const PORT = 3000;
+let PORT = process.env.PORT || 3000;
+// PORT = 3000;
 app.listen(PORT, () => {
   "started server";
   console.log("Start");
