@@ -45,11 +45,23 @@ exports.createBatch = async (req, res) => {
 };
 
 exports.getMyBatches = async (req, res) => {
-  const userId = req.params.userId;
+  const { tutorId } = req.query;
   try {
-    let batches = await Batch.find({ userId: userId });
+    let batches = await Batch.find({ userId: tutorId });
     res.json(batches);
   } catch (error) {
     res.json({ message: error });
   }
+  // const { tutorId } = req.query;
+  // try {
+  //   let user = await User.findById(tutorId);
+  //   let batches = user.createdBatches.map(async (batch) => {
+  //     let cur = await Batch.findById(batch.batchId);
+  //     return cur;
+  //   });
+  //   const allBatches = await Promise.all(batches);
+  //   res.json(allBatches);
+  // } catch (error) {
+  //   console.log(error);
+  // }
 };
