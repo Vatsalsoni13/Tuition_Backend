@@ -31,6 +31,8 @@ exports.createBatch = async (req, res) => {
     info: info,
     students: [],
     intake: intake,
+    assigned:[],
+    assignments:[]
   };
   try {
     let newBatch = Batch(batch);
