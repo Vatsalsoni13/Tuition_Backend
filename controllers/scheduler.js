@@ -14,7 +14,6 @@ const TodaysDate = () => {
 
 const CurrentTime = () => {
   var today = new Date();
-
   var time = today.getHours() + ":" + today.getMinutes();
   return time;
 };
@@ -39,7 +38,6 @@ exports.scheduleAssignment = async (req, res) => {
     res.json({ message: error });
   }
 };
-
 
 cron.schedule('* * * * *', async () => {
 
