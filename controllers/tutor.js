@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/User");
 const Batch = require("../models/Batch");
+const Assignment = require("../models/Assignment")
 const { Mongoose } = require("mongoose");
 
 exports.createBatch = async (req, res) => {
@@ -31,15 +32,23 @@ exports.createBatch = async (req, res) => {
     info: info,
     students: [],
     intake: intake,
-    assigned:[],
-    assignments:[]
+    material:[]
   };
+  
   try {
     let newBatch = Batch(batch);
     await newBatch.save();
+    
     let user = await User.findById(userId);
     user.createdBatches.push({ batchId: newBatch._id.toString() });
     await user.save();
+    const assign= {
+      batchId:newBatch._id,
+      assigned:[],
+      assignments:[]
+    }
+    let assignment = Assignment(assign);
+    await assignment.save();
     res.json(newBatch);
   } catch (error) {
     res.json({ message: error });
