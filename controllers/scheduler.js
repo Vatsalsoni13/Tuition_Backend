@@ -25,8 +25,24 @@ const Assignment = require("../models/Assignment");
 
 const TodaysDate = () => {
   var today = new Date();
-
-var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  let date;
+  let a;
+if(today.getMonth()<9)
+{
+  a = today.getFullYear()+'-0'+(today.getMonth()+1);
+}
+else
+{
+  a = today.getFullYear()+'-'+(today.getMonth()+1);
+}
+if(today.getDate()<10)
+{
+  date = a + '-0' + today.getDate();
+}
+else
+{
+  date = a + '-' + today.getDate();
+}
   return date;
 };
 
