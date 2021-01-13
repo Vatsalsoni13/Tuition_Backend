@@ -95,3 +95,20 @@ exports.getBatchAssignments =  async(req,res) =>{
     res.json({message:error});
   }
 }
+
+exports.getAssignmentResponses = async(req,res) =>{
+  const {assignId} = req.query;
+  try {
+    let assignment = await Assignment.findById(assignId);
+    let len=assignment.responses.length;
+    let i;
+    for(i=0;i<len;i++)
+    {
+        let student = await  User.findById(assignment.responses[i].studentId);
+        assignment.responses[i].email=student.email;
+    }
+    res.json(assignment.responses);
+  } catch (error) {
+    res.json({message:error});
+  }
+}
