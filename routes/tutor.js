@@ -19,5 +19,6 @@ const scheduleController = require("../controllers/scheduler");
 router.get("/mybatches", tutorController.getMyBatches);
 router.post("/create_batch", tutorController.createBatch);
 router.post("/schedule",scheduleController.scheduleAssignment);
+router.get("/assignments",tutorController.getBatchAssignments);
 
 module.exports = router;

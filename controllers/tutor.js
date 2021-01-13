@@ -76,3 +76,22 @@ exports.getMyBatches = async (req, res) => {
   //   console.log(error);
   // }
 };
+
+exports.getBatchAssignments =  async(req,res) =>{
+  const {batchId} = req.query;
+  try {
+    let assignments = await Assignment.find({batchId:batchId});
+    let newAssignments = assignments.map((item)=>{
+
+      let asign={};
+      asign.name=item.name;
+      asign.istDateTime=item.istDateTime;
+      asign.path=item.path;
+      asign.assignId=item._id;
+      return asign;
+    })
+    res.json(newAssignments);
+  } catch (error) {
+    res.json({message:error});
+  }
+}

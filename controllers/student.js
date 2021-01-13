@@ -144,8 +144,7 @@ exports.getAllAssignments = async (req,res) =>{
 
       let asign={};
       asign.name=item.name;
-      asign.date=item.istDate;
-      asign.time=item.istTime;
+      asign.istDateTime=item.istDateTime;
       asign.path=item.path;
       asign.assignId=item._id;
       return asign;
