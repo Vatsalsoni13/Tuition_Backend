@@ -39,7 +39,7 @@ const batch = new mongoose.Schema({
     default: 10,
   },
   students: [],
-  material:[]
+  assigned:[]
 });
 
 module.exports = Batch = mongoose.model("batch", batch);

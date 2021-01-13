@@ -5,6 +5,10 @@ const studentController = require("../controllers/student");
 
 router.get("/search_batches", studentController.getSearchBatches);
 router.get("/enroll_batch", studentController.enrollBatch);
-router.get('/enrolled_batches',studentController.getEnrolledBatches)
+router.get('/enrolled_batches',studentController.getEnrolledBatches);
+router.post('/response',studentController.postResponse);
+router.get('/response',studentController.getResponse);
+
+
 
 module.exports = router;

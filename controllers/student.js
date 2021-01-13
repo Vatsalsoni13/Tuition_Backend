@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/User");
 const Batch = require("../models/Batch");
+const Assignment = require("../models/Assignment");
 
 exports.getSearchBatches = async (req, res) => {
   const { std, subject } = req.query;
@@ -66,4 +67,34 @@ exports.getEnrolledBatches = async (req,res) =>{
     } catch (error) {
       console.log(error);
     }
+}
+
+exports.postResponse = async (req,res) =>{
+  const {path,date,time,name,assignId,studentId} = req.body;
+  try {
+    let assignment = await Assignment.findById(assignId);
+    console.log(assignment);
+    assignment.responses.push({path:path,date:date,time:time,name:name,studentId:studentId});
+    await assignment.save();
+    res.json(assignment);
+  } catch (error) {
+    res.json({message:"SSSSSs"});
+  }
+}
+exports.getResponse = async (req,res) =>{
+  const {assignId,studentId}=req.query;
+  try {
+    let assignment = await Assignment.findById(assignId);
+    let response={}
+    assignment.responses.forEach(element => {
+      if(element.studentId === studentId)
+      {
+        response=element;
+      }
+    });
+    console.log(response);
+    res.json(response)
+  } catch (error) {
+    res.json({message:error});
+  }
 }
