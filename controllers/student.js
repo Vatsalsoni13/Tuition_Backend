@@ -81,6 +81,29 @@ exports.postResponse = async (req,res) =>{
     res.json({message:"SSSSSs"});
   }
 }
+exports.deleteResponse = async (req,res) =>{
+  const {assignId,studentId}=req.query;
+  try {
+    let assignment = await Assignment.findById(assignId);
+    let response={}
+    let newResponses=assignment.responses.filter(element => {
+      if(element.studentId === studentId)
+      { 
+        response=element;
+        console.log("Removed");
+      }
+      else
+      {
+        return element;
+      }
+    });
+    assignment.responses = newResponses;
+    await assignment.save();
+    res.json(response);
+  } catch (error) {
+    res.json({message:error});
+  }
+}
 exports.getResponse = async (req,res) =>{
   const {assignId,studentId}=req.query;
   try {
