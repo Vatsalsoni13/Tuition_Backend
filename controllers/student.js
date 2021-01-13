@@ -121,3 +121,38 @@ exports.getResponse = async (req,res) =>{
     res.json({message:error});
   }
 }
+
+
+exports.getAllAssignments = async (req,res) =>{
+  const {studentId}=req.query;
+  let student = await User.findById(studentId);
+  let assignments=[];
+  try {
+
+    let len=student.enrolledBatches.length;
+    console.log(len);
+    let i;
+    for(i=0;i<len;i++)
+    {
+        let batch=student.enrolledBatches[i];
+       
+        let batchAssign=await Assignment.find({"batchId":batch.batchId});
+        console.log(batchAssign);
+        assignments.push(...batchAssign);
+    }
+    let newAssignments = assignments.map((item)=>{
+
+      let asign={};
+      asign.name=item.name;
+      asign.date=item.istDate;
+      asign.time=item.istTime;
+      asign.path=item.path;
+      asign.assignId=item._id;
+      return asign;
+    })
+    console.log(newAssignments);
+    res.json(newAssignments);
+  } catch (error) {
+    res.json({message:error}); 
+  }
+}
