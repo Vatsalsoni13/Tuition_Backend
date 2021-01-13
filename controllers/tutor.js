@@ -32,7 +32,7 @@ exports.createBatch = async (req, res) => {
     info: info,
     students: [],
     intake: intake,
-    material:[]
+    assigned:[]
   };
   
   try {

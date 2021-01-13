@@ -90,23 +90,21 @@ const ISTtoUTC=(time,date)=>{
 }
 exports.scheduleAssignment = async (req, res) => {
   //file
-  console.log(req.file)
-  const { batchId, date, time } = req.body;
+  const { batchId, date, time,name,path } = req.body;
   let utcDT=ISTtoUTC(time,date);
   let job={};
   job.batchId = batchId;
-  console.log(utcDT);
-  job.date = utcDT.date; //2020-10-21 it shd be like this in front
-  job.time = utcDT.time; //14:30
-  console.log(job);
+  job.date = date; //2020-10-21 it shd be like this in front
+  job.time = time; //14:30
   try {
     let newJob = new Job(job);
     await newJob.save();
-    let batch = await Assignment.findOne({batchId:batchId});
-    console.log(batch);
-    batch.assigned.push({path:req.file.path,date:utcDT.date,time:utcDT.time,istDate:date,istTime:time});
+    console.log(newJob,"THIS IS JOB");
+    let batch = await Batch.findById(batchId);
+    console.log(batch,"THIS IS BATCH");
+    batch.assigned.push({path:path,date:utcDT.date,time:utcDT.time,istDate:date,istTime:time,name:name});
     await batch.save();
-    res.json("SAB THUK");
+    res.json("SAB THIK");
   } catch (error) {
     res.json({ message: error });
   }
@@ -116,25 +114,39 @@ cron.schedule('* * * * *', async () => {
 
     const d=TodaysDate();
     const t=CurrentTime();
-    // console.log(d,t)
     const curJobs = await Job.find({
         date: d,
         time: t,
       });
     await Promise.all(curJobs.map(async (item)=>{
-        let batch = await Assignment.findOne({batchId:item.batchId});
+        let batch = await Batch.findById(item.batchId);
+        const bId=item.batchId;
         console.log(batch);
-        let newAssigned = batch.assigned.filter((item)=>{
-            if(item.date === d && item.time === t)
-            {
-                batch.assignment.push({path:item.path,});
+        let newAssigned = batch.assigned.map(async (itm)=>{
+            if(itm.istDate === d && itm.istTime === t)
+            {   
+                let assignment={path:itm.path,istTime:itm.istTime,istDate:itm.istDate,responses:[],batchId:bId,name:itm.name}
+                let newAssignment = Assignment(assignment);
+                await newAssignment.save();
+                return itm;
             }
             else
             {
-                return item;
+              return itm;
             }
         })
-        batch.assigned=newAssigned;
+        let c=await Promise.all(newAssigned);
+        console.log(c);
+        batch.assigned=c.filter((itm)=>{
+          if(itm.date === d && itm.time === t)
+          { 
+            console.log("ASSA");
+          }
+          else
+          {
+            return itm;
+          }
+        })
         await batch.save();
     }))  
     await Job.deleteMany({ date: d, time:t });
