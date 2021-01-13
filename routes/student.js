@@ -9,8 +9,7 @@ router.get('/enrolled_batches',studentController.getEnrolledBatches);
 router.post('/response',studentController.postResponse);
 router.get('/response',studentController.getResponse);
 router.get('/response_del',studentController.deleteResponse);
-
-
+router.get('/assignments',studentController.getAllAssignments);
 
 
 module.exports = router;
