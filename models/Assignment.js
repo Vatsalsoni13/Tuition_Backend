@@ -10,12 +10,9 @@ const assignment = new mongoose.Schema({
     batchId: {
         type: String
       } ,
-      istTime:{
-        type:String
-      } ,
-      istDate:{
-        type:String
-      } ,
+    istDateTime:{
+      type:String
+    },
     responses:[]
 });
 
