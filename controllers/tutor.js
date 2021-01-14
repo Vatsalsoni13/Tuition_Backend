@@ -97,17 +97,34 @@ exports.getBatchAssignments =  async(req,res) =>{
 }
 
 exports.getAssignmentResponses = async(req,res) =>{
-  const {assignId} = req.query;
+  const {assignId,batchId} = req.query;
   try {
     let assignment = await Assignment.findById(assignId);
     let len=assignment.responses.length;
     let i;
+    let submitted = new Map();
     for(i=0;i<len;i++)
     {
         let student = await  User.findById(assignment.responses[i].studentId);
         assignment.responses[i].email=student.email;
+        assignment.responses[i].studentName=student.name;
+        submitted.set(assignment.responses[i].studentId,1);
     }
-    res.json(assignment.responses);
+    let batch = await Batch.findById(batchId);
+    let notSubmitted=[]
+    len = batch.students.length;
+    for(i=0;i<len;i++)
+    {
+      if(!submitted.has(batch.students[i]._id))
+      {
+        let student = await  User.findById(batch.students[i]._id);
+        notSubmitted.push({email:student.email,studentName:student.name});
+      }
+    }
+    let response = {};
+    response.submitted=assignment.responses;
+    response.notSubmitted=notSubmitted;
+    res.json(response);
   } catch (error) {
     res.json({message:error});
   }

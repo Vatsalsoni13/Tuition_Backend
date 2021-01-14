@@ -70,15 +70,15 @@ exports.getEnrolledBatches = async (req,res) =>{
 }
 
 exports.postResponse = async (req,res) =>{
-  const {path,date,time,name,assignId,studentId} = req.body;
+  const {path,istDateTime,name,assignId,studentId} = req.body;
   try {
     let assignment = await Assignment.findById(assignId);
     console.log(assignment);
-    assignment.responses.push({path:path,date:date,time:time,name:name,studentId:studentId});
+    assignment.responses.push({path:path,istDateTime:istDateTime,name:name,studentId:studentId});
     await assignment.save();
     res.json(assignment);
   } catch (error) {
-    res.json({message:"SSSSSs"});
+    res.json({message:"Reponse Failed"});
   }
 }
 exports.deleteResponse = async (req,res) =>{
