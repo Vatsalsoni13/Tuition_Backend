@@ -49,13 +49,22 @@ else
 const CurrentTime = () => {
   var today = new Date();
   let time;
-  if(today.getMinutes()<10)
+  let a;
+  if(today.getHours()<10)
   {
-   time = today.getHours() + ":0" + today.getMinutes().toString();
+    a="0"+today.getHours()
   }
   else
   {
-   time = today.getHours() + ":" + today.getMinutes();
+    a=today.getHours();
+  }
+  if(today.getMinutes()<10)
+  {
+   time =  a + ":0" + today.getMinutes().toString();
+  }
+  else
+  {
+   time =  a + ":" + today.getMinutes();
   }
   return time;
 };
