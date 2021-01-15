@@ -4,6 +4,22 @@ const Batch = require("../models/Batch");
 const Assignment = require("../models/Assignment")
 const { Mongoose } = require("mongoose");
 
+
+
+exports.getSingleBatch = async (req,res)=>{
+    
+    const [batchId] = req.query;
+    try{
+      let batch  = await Batch.findById(batchId);
+      res.json(batch);
+    }
+    catch(error)
+    { 
+      res.json({message:"BATCH NOT FOUND"});
+    }
+  
+}
+
 exports.createBatch = async (req, res) => {
   const {
     title,
