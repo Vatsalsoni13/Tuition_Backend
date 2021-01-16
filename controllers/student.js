@@ -140,8 +140,32 @@ exports.getAllAssignments = async (req,res) =>{
         console.log(batchAssign);
         assignments.push(...batchAssign);
     }
-    let newAssignments = assignments.map((item)=>{
+    let newAssignments = assignments.map(async (item)=>{
 
+      let asign={};
+      asign.name=item.name;
+      asign.istDateTime=item.istDateTime;
+      asign.path=item.path;
+      asign.assignId=item._id;
+      let batch= await Batch.findById(item.batchId);
+      asign.batchName = batch.info.title;
+      asign.batchSubject = batch.info.subject;
+      return asign;
+    })
+    res.json(await Promise.all(newAssignments));
+  } catch (error) {
+    res.json({message:error}); 
+  }
+}
+
+exports.getBatchAssignments = async (req,res) =>{
+
+  const {batchId}=req.query;
+  try {
+
+    let batchAssign=await Assignment.find({"batchId":batchId});
+    console.log(batchAssign);
+    let assignments = batchAssign.map((item)=>{
       let asign={};
       asign.name=item.name;
       asign.istDateTime=item.istDateTime;
@@ -149,9 +173,9 @@ exports.getAllAssignments = async (req,res) =>{
       asign.assignId=item._id;
       return asign;
     })
-    console.log(newAssignments);
-    res.json(newAssignments);
+    res.json(assignments)
   } catch (error) {
-    res.json({message:error}); 
+    
   }
+
 }
