@@ -8,9 +8,20 @@ const { Mongoose } = require("mongoose");
 
 exports.getSingleBatch = async (req,res)=>{
     
-    const [batchId] = req.query;
+    const {batchId} = req.query;
     try{
       let batch  = await Batch.findById(batchId);
+      let len=batch.students.length;
+      let i;
+      for(i=0;i<len;i++)
+      {
+          let student = await User.findById(batch.students[i]);
+          batch.students[i]={name:student.name,email:student.email}
+      }
+      let owner  = await User.findById(batch.userId);
+      batch.ownerName = owner.name;
+      batch.ownerEmail = owner.email;
+      batch.ownerPhone = owner.phone;
       res.json(batch);
     }
     catch(error)

@@ -21,5 +21,4 @@ router.post("/create_batch", tutorController.createBatch);
 router.post("/schedule",scheduleController.scheduleAssignment);
 router.get("/assignments",tutorController.getBatchAssignments);
 router.get("/responses",tutorController.getAssignmentResponses);
-router.get("/batch",tutorController.getSingleBatch);
 module.exports = router;
