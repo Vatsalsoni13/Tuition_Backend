@@ -19,10 +19,13 @@ exports.getSingleBatch = async (req,res)=>{
           batch.students[i]={name:student.name,email:student.email}
       }
       let owner  = await User.findById(batch.userId);
-      batch.ownerName = owner.name;
-      batch.ownerEmail = owner.email;
-      batch.ownerPhone = owner.phone;
-      res.json(batch);
+      let own={};
+      own.name=owner.name;
+      own.qualification=owner.qualification;
+      own.phone=owner.phone;
+      own.email=owner.email;
+      own.location=owner.location;
+      res.json({batch:batch,owner:own});
     }
     catch(error)
     { 
