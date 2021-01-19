@@ -1,38 +1,31 @@
 const express = require("express");
 const User = require("../models/User");
 const Batch = require("../models/Batch");
-const Assignment = require("../models/Assignment")
+const Assignment = require("../models/Assignment");
 const { Mongoose } = require("mongoose");
 
-
-
-exports.getSingleBatch = async (req,res)=>{
-    
-    const {batchId} = req.query;
-    try{
-      let batch  = await Batch.findById(batchId);
-      let len=batch.students.length;
-      let i;
-      for(i=0;i<len;i++)
-      {
-          let student = await User.findById(batch.students[i]);
-          batch.students[i]={name:student.name,email:student.email}
-      }
-      let owner  = await User.findById(batch.userId);
-      let own={};
-      own.name=owner.name;
-      own.qualification=owner.qualification;
-      own.phone=owner.phone;
-      own.email=owner.email;
-      own.location=owner.location;
-      res.json({batch:batch,owner:own});
+exports.getSingleBatch = async (req, res) => {
+  const { batchId } = req.query;
+  try {
+    let batch = await Batch.findById(batchId);
+    let len = batch.students.length;
+    let i;
+    for (i = 0; i < len; i++) {
+      let student = await User.findById(batch.students[i]);
+      batch.students[i] = { name: student.name, email: student.email };
     }
-    catch(error)
-    { 
-      res.json({message:"BATCH NOT FOUND"});
-    }
-  
-}
+    let owner = await User.findById(batch.userId);
+    let own = {};
+    own.name = owner.name;
+    own.qualification = owner.qualification;
+    own.phone = owner.phone;
+    own.email = owner.email;
+    own.location = owner.location;
+    res.json({ batch: batch, owner: own });
+  } catch (error) {
+    res.json({ message: "BATCH NOT FOUND" });
+  }
+};
 
 exports.createBatch = async (req, res) => {
   const {
@@ -62,21 +55,21 @@ exports.createBatch = async (req, res) => {
     info: info,
     students: [],
     intake: intake,
-    assigned:[]
+    assigned: [],
   };
-  
+
   try {
     let newBatch = Batch(batch);
     await newBatch.save();
-    
+
     let user = await User.findById(userId);
     user.createdBatches.push({ batchId: newBatch._id.toString() });
     await user.save();
-    const assign= {
-      batchId:newBatch._id,
-      assigned:[],
-      assignments:[]
-    }
+    const assign = {
+      batchId: newBatch._id,
+      assigned: [],
+      assignments: [],
+    };
     let assignment = Assignment(assign);
     await assignment.save();
     res.json(newBatch);
@@ -107,55 +100,52 @@ exports.getMyBatches = async (req, res) => {
   // }
 };
 
-exports.getBatchAssignments =  async(req,res) =>{
-  const {batchId} = req.query;
+exports.getBatchAssignments = async (req, res) => {
+  const { batchId } = req.query;
   try {
-    let assignments = await Assignment.find({batchId:batchId});
-    let newAssignments = assignments.map((item)=>{
-
-      let asign={};
-      asign.name=item.name;
-      asign.istDateTime=item.istDateTime;
-      asign.path=item.path;
-      asign.assignId=item._id;
+    let assignments = await Assignment.find({ batchId: batchId });
+    let newAssignments = assignments.map((item) => {
+      let asign = {};
+      asign.name = item.name;
+      asign.istDateTime = item.istDateTime;
+      asign.path = item.path;
+      asign.assignId = item._id;
+      asign.fileName = item.fileName;
       return asign;
-    })
+    });
     res.json(newAssignments);
   } catch (error) {
-    res.json({message:error});
+    res.json({ message: error });
   }
-}
+};
 
-exports.getAssignmentResponses = async(req,res) =>{
-  const {assignId,batchId} = req.query;
+exports.getAssignmentResponses = async (req, res) => {
+  const { assignId, batchId } = req.query;
   try {
     let assignment = await Assignment.findById(assignId);
-    let len=assignment.responses.length;
+    let len = assignment.responses.length;
     let i;
     let submitted = new Map();
-    for(i=0;i<len;i++)
-    {
-        let student = await  User.findById(assignment.responses[i].studentId);
-        assignment.responses[i].email=student.email;
-        assignment.responses[i].studentName=student.name;
-        submitted.set(assignment.responses[i].studentId,1);
+    for (i = 0; i < len; i++) {
+      let student = await User.findById(assignment.responses[i].studentId);
+      assignment.responses[i].email = student.email;
+      assignment.responses[i].studentName = student.name;
+      submitted.set(assignment.responses[i].studentId, 1);
     }
     let batch = await Batch.findById(batchId);
-    let notSubmitted=[]
+    let notSubmitted = [];
     len = batch.students.length;
-    for(i=0;i<len;i++)
-    {
-      if(!submitted.has(batch.students[i]._id))
-      {
-        let student = await  User.findById(batch.students[i]._id);
-        notSubmitted.push({email:student.email,studentName:student.name});
+    for (i = 0; i < len; i++) {
+      if (!submitted.has(batch.students[i]._id)) {
+        let student = await User.findById(batch.students[i]._id);
+        notSubmitted.push({ email: student.email, studentName: student.name });
       }
     }
     let response = {};
-    response.submitted=assignment.responses;
-    response.notSubmitted=notSubmitted;
+    response.submitted = assignment.responses;
+    response.notSubmitted = notSubmitted;
     res.json(response);
   } catch (error) {
-    res.json({message:error});
+    res.json({ message: error });
   }
-}
+};
