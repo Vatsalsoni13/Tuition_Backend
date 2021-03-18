@@ -149,3 +149,25 @@ exports.getAssignmentResponses = async (req, res) => {
     res.json({ message: error });
   }
 };
+
+exports.schedule = async (req, res) => {
+  const { batchId } = req.query;
+  // console.log(req.body);
+  try {
+    await Batch.findByIdAndUpdate(
+      { _id: batchId },
+      { $push: { lectures: req.body } },
+      { new: true },
+      (err, detail) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Insert unsuccessful",
+          });
+        }
+        res.json(detail);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};

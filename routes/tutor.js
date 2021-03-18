@@ -15,10 +15,10 @@ const scheduleController = require("../controllers/scheduler");
 // })
 // const upload = multer({storage:storage})
 
-
 router.get("/mybatches", tutorController.getMyBatches);
 router.post("/create_batch", tutorController.createBatch);
-router.post("/schedule",scheduleController.scheduleAssignment);
-router.get("/assignments",tutorController.getBatchAssignments);
-router.get("/responses",tutorController.getAssignmentResponses);
+router.post("/schedule", scheduleController.scheduleAssignment);
+router.get("/assignments", tutorController.getBatchAssignments);
+router.get("/responses", tutorController.getAssignmentResponses);
+router.put("/schedule", tutorController.schedule);
 module.exports = router;
