@@ -156,8 +156,8 @@ exports.schedule = async (req, res) => {
   try {
     await Batch.findByIdAndUpdate(
       { _id: batchId },
-      { $push: { lectures: req.body } },
-      { new: true },
+      { $addToSet: { lectures: req.body } },
+      { new: true, useFindAndModify: false },
       (err, detail) => {
         if (err) {
           return res.status(400).json({
